@@ -10,9 +10,9 @@ def dfs(start, next, val, cnt):
     if cnt == n:  # 모든 도시를 방문했을 경우
         if cost[next][start] != 0:
             val += cost[next][start]
-            print(start)
-            print(next)
-            print(val)
+            # print(start)
+            # print(next)
+            # print(val)
             if minVal > val:
                 minVal = val
         return
