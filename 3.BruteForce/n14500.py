@@ -1,45 +1,62 @@
-# undo
 import sys
-import numpy as np
+input = sys.stdin.readline
 
+# 상, 하, 좌, 우
+move = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+
+# INPUT
 N, M = map(int, input().split())
+board = [list(map(int, input().split())) for _ in range(N)]
+visited = [[False] * M for _ in range(N)]
 
-li = [list(map(int, sys.stdin.readline().split())) for i in range(N)]
-li = np.pad(li, ((1,1),(1,1)), 'constant', constant_values=0)
+# 최대값 변수
+maxValue = 0
 
+# ㅗ, ㅜ, ㅓ, ㅏ 제외한 모양들 최대값 계산
+def dfs(i, j, dsum, cnt):
+    global maxValue
+    # 모양 완성되었을 때 최대값 계산
+    if cnt == 4:
+        maxValue = max(maxValue, dsum)
+        return
 
-def getMax(i, j):
-    cnt = 0
-    val = li[i][j]
-    n = i
-    m = j
-    while cnt < 3:
-        mVal = max(li[n-1][m], li[n][m-1], li[n+1][m], li[n][m+1])  # 만약 max값이 여러개일 경우 고려 필요
-        val += mVal
-        print(mVal)
-        for _ in (li[n-1][m], li[n][m-1], li[n+1][m], li[n][m+1]):
-            if mVal == li[n-1][m]:
-                n = n-1  # getMax(n-1, m)
+    # 상, 하, 좌, 우로 이동
+    for n in range(4):
+        ni = i+move[n][0]
+        nj = j+move[n][1]
+        if 0 <= ni < N and 0 <= nj < M and not visited[ni][nj]:
+            # 방문 표시 및 제거
+            visited[ni][nj] = True
+            dfs(ni, nj, dsum + board[ni][nj], cnt+1)
+            visited[ni][nj] = False
+
+# ㅗ, ㅜ, ㅓ, ㅏ 모양의 최대값 계산
+def exce(i, j):
+    global maxValue
+    for n in range(4):
+        # 초기값은 시작지점의 값으로 지정
+        tmp = board[i][j]
+        for k in range(3):
+            # move 배열의 요소를 3개씩 사용할 수 있도록 인덱스 계산
+            # 012, 123, 230, 301
+            t = (n+k) % 4
+            ni = i+move[t][0]
+            nj = j+move[t][1]
+
+            if not (0 <= ni < N and 0 <= nj < M):
+                tmp = 0
                 break
-            elif mVal == li[n][m-1]:
-                m = m-1  # getMax(n, m-1)
-                break
-            elif mVal == li[n+1][m]:
-                n = n+1  # getMaX(n+1, m)
-                break
-            elif mVal == li[n][m+1]:
-                m = m+1  # getMax(n, m+1)
-                break
-        cnt += 1
-    print(f'{li[i][j]}, {val}')
-    return val
+            tmp += board[ni][nj]
+        # 최대값 계산
+        maxValue = max(maxValue, tmp)
 
 
-maxVal = 0
-for i in range(1, N+1):
-    for j in range(1, M+1):
-        val = getMax(i, j)
-        if val > maxVal:
-            maxVal = val
+for i in range(N):
+    for j in range(M):
+        # 시작점 visited 표시
+        visited[i][j] = True
+        dfs(i, j, board[i][j], 1)
+        visited[i][j] = False
+        exce(i, j)
 
-print(maxVal)
+print(maxValue)
