@@ -11,4 +11,5 @@ for i in range(N-1, -1, -1):
     else:
         dp[i] = max(dp[i+1], li[i][1] + dp[i + li[i][0]])
 
+print(dp)
 print(dp[0])
