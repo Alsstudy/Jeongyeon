@@ -1,16 +1,19 @@
+# undo
 import sys
 input = sys.stdin.readline
 
 n = int(input())
 li = list(map(int, input().split()))
-dp = [li[n-1]]
 
-for i in range(n-2, -1, -1):
-    if li[i] < li[i+1]:
-        dp.append(max(dp) + li[i])
-    else:
-        dp.append(max(li[i], min(dp)))
+dp = [0] * n
+dp[0] = li[0]
 
-    print(dp)
+for i in range(1, n):
+    for j in range(i):
+        if li[i] > li[j]:
+            dp[i] = max(dp[j] + li[i], dp[i])
+        else:
+            dp[i] = max(li[i], dp[i])
+
 
 print(max(dp))
