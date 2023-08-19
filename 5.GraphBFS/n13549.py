@@ -6,25 +6,29 @@ input = sys.stdin.readline
 def bfs():
     while queue:
         nidx = queue.popleft()
-        # print(nidx)
-        if nidx == k:
-            print(li[k])
-            return
-        for idx in [nidx+1, nidx-1, nidx*2]:
-            if 0 <= idx <= 100000:
-                if li[idx] == 0:
-                    if idx == nidx*2:
-                        li[idx] = li[nidx]
-                    else:
-                        li[idx] = li[nidx] + 1
-                    queue.append(idx)
 
-# 5, 10, 20, 40, 80, 160
+        if nidx == k:
+            print(li[nidx])
+            return
+        if 0 <= nidx * 2 <= 100000 and li[nidx*2] == -1:
+            li[nidx*2] = li[nidx]
+            queue.appendleft(nidx*2)
+        if 0 <= nidx - 1 <= 100000 and li[nidx-1] == -1:
+            li[nidx-1] = li[nidx] + 1
+            queue.append(nidx-1)
+        if 0 <= nidx + 1 <= 100000 and li[nidx+1] == -1:
+            li[nidx+1] = li[nidx] + 1
+            queue.append(nidx+1)
+
+
 
 n, k = map(int, input().split())
 
-li = [0] * 100001
+li = [-1] * 100001
 
-queue = deque([n])
+queue = deque([])
+queue.append(n)
+
+li[n] = 0
 
 bfs()
