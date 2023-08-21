@@ -4,34 +4,38 @@ input = sys.stdin.readline
 
 
 def bfs():
-    while q:
-        s, c = q.popleft()
-        if dist[s][s] == -1:  # 붙여넣기
-            dist[s][s] = dist[s][c] + 1
-            q.append((s, s))
-        if s + c <= n and dist[s + c][c] == -1:  # 복사
-            dist[s + c][c] = dist[s][c] + 1
-            q.append((s + c, c))
-        if s - 1 >= 0 and dist[s - 1][c] == -1:  # 삭제
-            dist[s - 1][c] = dist[s][c] + 1
-            q.append((s - 1, c))
+    while queue:
+        a, b = queue.popleft()
+
+        if li[a][a] == -1:
+            li[a][a] = li[a][b] + 1
+            queue.append((a, a))
+
+        if a + b <= s and li[a+b][b] == -1:
+            li[a+b][b] = li[a][b] + 1
+            queue.append((a+b, b))
+
+        if a - 1 >= 0 and li[a-1][b] == -1:
+            li[a-1][b] = li[a][b] + 1
+            queue.append((a-1, b))
 
 
-n = int(input())
+s = int(input())
 
-dist = [[-1] * (n + 1) for _ in range(n + 1)]
-q = deque()
-q.append((1, 0))
+li = [[-1] * (s+1) for _ in range(s+1)]
 
-dist[1][0] = 0
+queue = deque()
+queue.append((1, 0))
+
+li[1][0] = 0
 
 bfs()
 
 answer = -1
 
-for i in range(n + 1):
-    if dist[n][i] != -1:
-        if answer == -1 or answer > dist[n][i]:
-            answer = dist[n][i]
+for i in range(s+1):
+    if li[s][i] != -1:
+        if answer == -1 or answer > li[s][i]:
+            answer = li[s][i]
 
 print(answer)
