@@ -9,12 +9,12 @@ def check_line(line):
 
         if line[i] < line[i-1]:
             for j in range(l):
-                if i + j >= n or line[i] != line[i+j] or slope[i+j]:
+                if i+j >= n or line[i] != line[i+j] or slope[i+j]:
                     return False
                 if line[i] == line[i+j]:
                     slope[i+j] = True
 
-        elif line[i] > line[i-1]:
+        if line[i] > line[i-1]:
             for j in range(l):
                 if i-j-1 < 0 or line[i-1] != line[i-j-1] or slope[i-j-1]:
                     return False
