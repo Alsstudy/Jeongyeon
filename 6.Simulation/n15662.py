@@ -1,29 +1,24 @@
-# undo
-def check_rotate(n, d):
-    global arr
-    od = d
-    curl, curr = arr[n][2], arr[n][6]
+def move(n, d):
+    global cur_left, cur_right, arr
+    temp = d
 
     for i in reversed(range(n)):
-        print(i)
-        if curr != arr[i][2]:
-            curr = arr[i][6]
-            rotate(arr[i], d*-1)
+        if arr[i][2] != cur_left:
+            cur_left = arr[i][6]
             d *= -1
+            rotate(arr[i], d)
         else:
             break
 
-    d = od
+    d = temp
     for i in range(n+1, t):
-        print(i)
-        if curl != arr[n][6]:
-            curl = arr[i][2]
-            rotate(arr[i], d*-1)
+        if arr[i][6] != cur_right:
+            cur_right = arr[i][2]
             d *= -1
+            rotate(arr[i], d)
         else:
             break
-    print()
-    print()
+
 
 def rotate(li, d):
     if d == 1:
@@ -42,6 +37,8 @@ arr = [list(map(int, input())) for _ in range(t)]
 k = int(input())
 for _ in range(k):
     n, d = map(int, input().split())
-    check_rotate(n-1, d)
+    cur_left, cur_right = arr[n-1][6], arr[n-1][2]
+    rotate(arr[n-1], d)
+    move(n-1, d)
 
-print(arr)
+print(sum([1 if val[0] else 0 for idx, val in enumerate(arr)]))
