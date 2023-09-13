@@ -1,52 +1,52 @@
-def bfs(ridx, bidx):
-    q = []
-    q.append(ridx)
-    cnt = 1
-    nbi = bidx[0]
-    nbj = bidx[1]
-    mark = False
+def move(x, y, dx, dy):
+    c = 0
+    if 0 <= x+dx < n and 0 <= x+dy < m:
+        while arr[x+dx][y+dy] != '#' and arr[x][y] != 'O':
+            x += dx
+            y += dy
+            c += 1
+    return x, y, c
 
+
+def bfs():
     while q:
-        nidx = q.pop(0)
-        nri = nidx[0]
-        nrj = nidx[1]
-        visited[nri][nrj] = 1
-
-        for i in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            bi = nbi
-            bj = nbj
-            while 0 <= bi + i[0] < n and 0 <= bj + i[1] < m and arr[bi + i[0]][bj + i[1]] != '#' and arr[bi + i[0]][bj + i[1]] != 'R':
-                bi += i[0]
-                bj += i[1]
-                if arr[bi][bj] == 'O':
-                    return -1
-
-            ri = nri
-            rj = nrj
-            while 0 <= ri + i[0] < n and 0 <= rj + i[1] < m and arr[ri+i[0]][rj+i[1]] != '#' and arr[ri+i[0]][rj+i[1]] != 'B' and visited[ri+i[0]][rj+i[1]] != 1:
-                ri += i[0]
-                rj += i[1]
-                visited[ri][rj] = 1
-                mark = True
-                if arr[ri][rj] == 'O':
+        crx, cry, cbx, cby, cnt = q.pop(0)
+        if cnt > 10:
+            return -1
+        for i in range(4):
+            nrx, nry, rc = move(crx, cry, d[i][0], d[i][1])
+            nbx, nby, bc = move(cbx, cby, d[i][0], d[i][1])
+            if arr[nbx][nby] != 'O':
+                if arr[nrx][nry] == 'O':
                     return cnt
-            q.append((ri, rj))
-        if mark:
-            cnt += 1
-        mark = False
-
+                if nrx == nbx and nry == nby:
+                    if rc > bc:
+                        nrx -= d[i][0]
+                        nry -= d[i][1]
+                    else:
+                        nbx -= d[i][0]
+                        nby -= d[i][1]
+                if not visited[nrx][nry][nbx][nby]:
+                    visited[nrx][nry][nbx][nby] = True
+                    q.append((nrx, nry, nbx, nby, cnt+1))
     return -1
+
 
 n, m = map(int, input().split())
 arr = [list(map(str, input())) for _ in range(n)]
 
-visited = [[0] * m for _ in range(n)]
+rx, ry, bx, by = 0, 0, 0, 0
+visited = [[[[False] * m for _ in range(n)] for _ in range(m)] for _ in range(n)]
 
 for i in range(n):
     for j in range(m):
         if arr[i][j] == 'R':
-            ridx = (i, j)
+            rx, ry = i, j
         elif arr[i][j] == 'B':
-            bidx = (i, j)
+            bx, by = i, j
 
-print(bfs(ridx, bidx))
+q = []
+q.append((rx, ry, bx, by, 1))
+visited[rx][ry][bx][by] = True
+d = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+print(bfs())
