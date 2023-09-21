@@ -1,3 +1,4 @@
+
 def solution(participant, completion):
     d = {}
     sumHash = 0
